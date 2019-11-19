@@ -3,6 +3,7 @@
     <!-- 头部导航 -->
     <el-menu
       :default-active="activeIndex2"
+      :router="true"
       class="el-menu-demo"
       mode="horizontal"
       @select="handleSelect"
@@ -10,15 +11,15 @@
       text-color="#fff"
       active-text-color="#ffd04b">
       <span style="line-height:60px;color:white;float:left;margin:0 20px;font-size:20px">句子迷Admin</span>
-      <el-menu-item index="1">首页</el-menu-item>
+      <el-menu-item index="/">首页</el-menu-item>
       <el-submenu index="2">
         <template slot="title">我的工作台</template>
-        <el-menu-item index="2-1">用户管理</el-menu-item>
-        <el-menu-item index="2-2">专辑管理</el-menu-item>
-        <el-menu-item index="2-3">句子管理</el-menu-item>
-        <el-menu-item index="2-4">推荐管理</el-menu-item>
+        <el-menu-item index="/user">用户管理</el-menu-item>
+        <el-menu-item index="/album">专辑管理</el-menu-item>
+        <el-menu-item index="/sentence">句子管理</el-menu-item>
+        <el-menu-item index="/pushhot">推荐管理</el-menu-item>
       </el-submenu>
-      <el-menu-item index="3">系统设置</el-menu-item>
+      <el-menu-item index="/sets">系统设置</el-menu-item>
       <van-image
         round
         fit="contain"
@@ -30,7 +31,7 @@
     </el-menu>
     <!-- 内容 -->
     <van-row type="flex" justify="space-around">
-      <van-col span="20" style="background-color:red;">
+      <van-col span="20" style="background-color:white;padding:10px;">
         
         <router-view/>
       </van-col>
