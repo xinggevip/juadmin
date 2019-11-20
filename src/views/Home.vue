@@ -77,6 +77,15 @@ export default {
     background-color: red;
     
   }
+  .home{
+    padding-top:50px;
+  }
+  .el-menu-demo{
+    position: fixed !important;
+    top: 0px;
+    z-index:5;
+    width:100%;
+  }
 
 </style>
 
