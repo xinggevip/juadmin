@@ -3,13 +3,21 @@
         <h1>用户管理</h1>
         <hr>
         <!-- 搜索筛选 -->
+        <el-button type="primary" icon="el-icon-search" size="medium" style="margin-right:15px;float:right">搜索</el-button>
+        <el-input v-model="serch" placeholder="请输入id" size="medium" style="width:200px;margin-right:15px;float:right"></el-input>
         
-        <el-input v-model="serch" placeholder="请输入id" size="medium" style="width:200px;margin-right:15px;"></el-input>
-        <el-button type="primary" icon="el-icon-search" size="medium" style="margin-right:30px;">搜索</el-button>
-        <el-checkbox v-model="checked">未激活</el-checkbox>
+        <!-- <el-checkbox v-model="checked">未激活</el-checkbox> -->
+        <el-select v-model="batch.do" placeholder="批量操作" style="margin-right:15px;">
+            <el-option label="批量设置为激活" value="yesActive"></el-option>
+            <el-option label="批量设置为未激活" value="noActive"></el-option>
+            <el-option label="批量删除" value="delUser"></el-option>
+        </el-select>
+
+        <el-button type="primary"  size="medium" v-on:click="toDo">执行</el-button>
 
         <el-table
             ref="multipleTable"
+            v-loading="loading"
             :data="userList"
             tooltip-effect="dark"
             style="width: 100%"
@@ -87,15 +95,11 @@
                     <el-button
                     size="mini"
                     type="danger"
-                    @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                    @click="open(scope.$index, scope.row)">删除</el-button>
                 </template>
             </el-table-column>
 
         </el-table>
-        <div style="margin-top: 20px;float:left">
-            <el-button @click="toggleSelection([tableData3[1], tableData3[2]])">切换第二、第三行的选中状态</el-button>
-            <el-button @click="toggleSelection()">取消选择</el-button>
-        </div>
 
         <!-- 分页 -->
         <div class="block" style="float:right;margin-top:23px;">
@@ -161,19 +165,13 @@
             </el-dialog>
 
 
-            
-            <el-form-item label="激活状态" v-if="editUser.isActive == 0 || editUser.isActive == 1">
-                
-                <el-tooltip :content="'激活状态: ' + editUser.isActive" placement="top">
-                    <el-switch 
-                    v-model="value"
-                    active-color="#13ce66"
-                    inactive-color="#ff4949"
-                    active-value="100"
-                    inactive-value="0"
-                    ></el-switch>
-                </el-tooltip>
+            <el-form-item label="激活状态">
+                <el-radio-group v-model="editUser.isActive">
+                <el-radio :label="0">未激活</el-radio>
+                <el-radio :label="1">已激活</el-radio>
+                </el-radio-group>
             </el-form-item>
+
 
             <el-form-item prop="userId" label="用户Id">
                 <el-input v-model="editUser.userId" :disabled="true"></el-input>
@@ -197,19 +195,31 @@
                 <el-radio label="女"></el-radio>
                 </el-radio-group>
             </el-form-item>
+            
+            <el-form-item prop="userPhone" label="手机号">
+                <el-input v-model="editUser.userPhone"></el-input>
+            </el-form-item>
 
-
-            <el-form-item label="用户邮箱">
+            <el-form-item label="邮箱">
                 <el-input v-model="editUser.userEmail"></el-input>
             </el-form-item>
 
-            <el-form-item prop="userPhone" label="用户手机号">
-                <el-input v-model="editUser.userPhone"></el-input>
+            <el-form-item label="签名">
+                <el-input v-model="editUser.userSlogan"></el-input>
+            </el-form-item>
+
+            <el-form-item label="简介">
+                <el-input
+                    type="textarea"
+                    :autosize="{ minRows: 2, maxRows: 4}"
+                    placeholder="请输入内容"
+                    v-model="editUser.userProfile">
+                </el-input>
             </el-form-item>
 
             <el-form-item>
             <el-button @click="dialogTableVisible = false">取消</el-button>
-            <el-button type="primary" @click="onEditUser">提交更新</el-button>
+            <el-button type="primary" :loading="loading" @click="onEditUser">提交更新</el-button>
             </el-form-item>
         </el-form>
         </el-dialog>
@@ -238,6 +248,12 @@ export default {
         }
         }
         return {
+            // 批量操作
+            batch:{
+                'do':'',
+            },
+            // 按钮加载状态
+            loading:false,
             // 
             dialogTableVisible:false,
             // 开关
@@ -268,6 +284,7 @@ export default {
             select:'',
             currentPage: 1,
             userList:[],
+            // 选中列表
             multipleSelection: [],
             // 分页配置
             pageSetting:{
@@ -317,9 +334,197 @@ export default {
         }
     },
     methods:{
-        // 激活状态改变
-        activeChange:function(activeChange){
-            alert(activeChange  );
+        open(index,row) {
+            this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+            }).then(() => {
+                // 执行删除单个用户
+                this.handleDelete(index,row);
+
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });          
+            });
+        },
+        // 删除单个用户
+        handleDelete:function(index,row){
+            this.loading = true;
+            console.log(row);
+            this.$http.post("/api/admindeloneuser",row,{
+                headers: {
+                    'Content-Type':'application/json;charset=UTF-8'
+                }
+                }).then(response => {
+                    // 响应成功回调
+                    if(response.data.success == true){
+                        this.$message({
+                            type: 'success',
+                            message: response.data.message,
+                            duration: 2000
+                        });
+                        this.userList.splice(index,1);
+                        this.loading = false;
+                    }else{
+                        this.$message({
+                        type: 'info',
+                            message: response.data.message,
+                            duration: 2000
+                        });
+                        this.loading = false;
+                    }
+                }),
+                function(response) {
+                    // 响应错误回调
+                    alert("服务器开小差了");
+                };
+        },
+        // 批量删除多个用户
+        handleDeleteSome:function(){
+            this.loading = true;
+            this.$http.post("/api/admindelsomeuser",this.multipleSelection,{
+                headers: {
+                    'Content-Type':'application/json;charset=UTF-8'
+                }
+
+            }).then(response => {
+                // 响应成功回调
+                if(response.data.success == true){
+                    this.$message({
+                        type: 'success',
+                        message: response.data.message,
+                        duration: 2000
+                    });
+
+                    // 删除后，重新get数据，实现刷新数据
+                    this.getUserList();
+
+                    this.loading = false;
+                }else{
+                    this.$message({
+                    type: 'info',
+                        message: response.data.message,
+                        duration: 2000
+                    });
+                    this.loading = false;
+                }
+            }),
+            function(response) {
+                // 响应错误回调
+                this.loading = false;
+                alert("服务器开小差了");
+                
+            };
+        },
+        // 设置为激活状态
+        setUserYesActive:function(){
+            // 遍历对象设置为激活状态
+            this.loading = true;
+            this.multipleSelection.forEach(function (item, index, arr){
+                item.isActive = 1;
+                arr[index] = item;
+            });
+        },
+        // 设置为未激活状态
+        setUserNoActive:function(){
+            // 遍历对象设置为未激活状态
+            this.loading = true;
+            this.multipleSelection.forEach(function (item, index, arr){
+                item.isActive = 0;
+                arr[index] = item;
+            });
+        },
+        // 批量提交之toggle激活
+        postWidthSetActive:function(){
+            this.$http.post("/api/adminsetusersyesact",this.multipleSelection,{
+                headers: {
+                    'Content-Type':'application/json;charset=UTF-8'
+                }
+
+            }).then(response => {
+                // 响应成功回调
+                if(response.data.success == true){
+                    this.$message({
+                        type: 'success',
+                        message: response.data.message,
+                        duration: 2000
+                    });
+                    this.loading = false;
+                }else{
+                    this.$message({
+                    type: 'info',
+                        message: response.data.message,
+                        duration: 2000
+                    });
+                    this.loading = false;
+                }
+            }),
+            function(response) {
+                // 响应错误回调
+                this.loading = false;
+                alert("服务器开小差了");
+                
+            };
+        },
+        
+        // 执行批量操作
+        toDo:function(){
+            
+            
+            if(this.batch.do == ''){
+                alert("请选择操作选项");
+                console.log(typeof this.batch.do);
+                console.log(this.batch.do);
+            }else{
+                
+
+                if(this.batch.do == 'yesActive'){
+                    console.log("选项不为空");
+                    console.log(typeof this.batch.do);
+                    console.log(this.batch.do);
+                    if(this.multipleSelection.length == 0){
+                        alert("未选中操作对象");
+                        console.log(this.multipleSelection);
+                    }else{
+                        console.log("操作对象不为空");
+                        console.log(this.multipleSelection);
+
+                        this.setUserYesActive();
+                        this.postWidthSetActive();
+
+                    }
+                }else if(this.batch.do == 'noActive'){
+                    console.log("选项不为空");
+                    console.log(typeof this.batch.do);
+                    console.log(this.batch.do);
+                    if(this.multipleSelection.length == 0){
+                        alert("未选中操作对象");
+                        console.log(this.multipleSelection);
+                    }else{
+                        console.log("操作对象不为空");
+                        console.log(this.multipleSelection);
+                        this.setUserNoActive();
+                        this.postWidthSetActive();
+                    }
+                }else if(this.batch.do == 'delUser'){
+                    console.log("选项不为空");
+                    console.log(typeof this.batch.do);
+                    console.log(this.batch.do);
+                    if(this.multipleSelection.length == 0){
+                        alert("未选中操作对象");
+                        console.log(this.multipleSelection);
+                    }else{
+                        console.log("操作对象不为空");
+                        console.log(this.multipleSelection);
+                        // 执行批量删除
+                        this.handleDeleteSome();
+                    }
+                }
+
+            }
         },
         // 设置对话框大小
         setDialogWidth() {
@@ -334,8 +539,52 @@ export default {
         },
         // 提交更新
         onEditUser:function(){
-            alert("提交更新用户信息");
-            this.editDialogClose();
+            this.loading = true;
+            // alert("提交更新用户信息");
+            console.log(this.editUser);
+
+            if (this.editUser.userPicture != '') {
+                this.$http.post("/api/edituser", this.editUser, {
+                    headers: {
+                        'Content-Type': 'application/json;charset=UTF-8'
+                    }
+
+                }).then(response => {
+                    console.log(response.data);
+
+                    if (response.data.success == true) {
+                        this.$message({
+                            type: 'success',
+                            message: response.data.message,
+                            duration: 2000
+                        });
+                        this.loading = false;
+                        this.editDialogClose();
+
+                    } else {
+                        this.$message({
+                            type: 'info',
+                            message: response.data.message,
+                            duration: 2000
+                        });
+                        this.loading = false;
+                    }
+
+                }),
+                    function (response) {
+                        // 响应错误回调
+                        alert("未知错误");
+                        this.loading = false;
+                    };
+
+
+
+
+            } else {
+                this.submitting = false;
+                alert("请上传专辑图片");
+            }
+
         },
         // 关闭对话框钩子函数
         editDialogClose:function(){
@@ -349,6 +598,8 @@ export default {
             
 
             this.editUser = row;
+            
+
             // 给头像赋值
             this.fileList = [{name: this.editUser.userPicture, url: this.$global.globalPictureUrl + this.editUser.userPicture}];
             this.dialogTableVisible = true;
