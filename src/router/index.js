@@ -23,32 +23,50 @@ const routes = [
       {
         path:'/',
         name:'index',
-        component:Index
+        component:Index,
+        meta:{
+          requireAuth: true  // 添加该字段，表示进入这个路由是需要登录的
+        }
       },
       {
         path:'/user',
         name:'user',
-        component:User
+        component:User,
+        meta:{
+          requireAuth: true  // 添加该字段，表示进入这个路由是需要登录的
+        }
       },
       {
         path:'/album',
         name:'album',
-        component:Album
+        component:Album,
+        meta:{
+          requireAuth: true  // 添加该字段，表示进入这个路由是需要登录的
+        }
       },
       {
         path:'/sentence',
         name:'sentence',
-        component:Sentence
+        component:Sentence,
+        meta:{
+          requireAuth: true  // 添加该字段，表示进入这个路由是需要登录的
+        }
       },
       {
         path:'/pushhot',
         name:'pushhot',
-        component:PushHot
+        component:PushHot,
+        meta:{
+          requireAuth: true  // 添加该字段，表示进入这个路由是需要登录的
+        }
       },
       {
         path:'/sets',
         name:'sets',
-        component:Sets
+        component:Sets,
+        meta:{
+          requireAuth: true  // 添加该字段，表示进入这个路由是需要登录的
+        }
       },
     ]
   },

@@ -65,7 +65,7 @@ export default {
 		    submitForm(loginForm) {
 				this.$refs[loginForm].validate((valid) => {
 					if (valid) {
-            alert("去登陆");
+            // alert("去登陆");
             this.login();
             /* 输入验证成功则执行 */
 

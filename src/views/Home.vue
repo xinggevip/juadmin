@@ -20,14 +20,20 @@
         <el-menu-item index="/pushhot">推荐管理</el-menu-item>
       </el-submenu>
       <el-menu-item index="/sets">系统设置</el-menu-item>
-      <van-image
-        round
-        fit="contain"
-        width="40px"
-        height="40px;"
-        src="http://www.qiangssvip.com/usr/uploads/2019/05/281426999.jpg"
-        style="float:right;top:10px;right:10px;"
-      />
+      <el-submenu index="4" style="float:right;">
+        <template slot="title">
+          <van-image
+            round
+            fit="contain"
+            width="40px"
+            height="40px;"
+            src="http://www.qiangssvip.com/usr/uploads/2019/05/281426999.jpg"
+            style="float:right;top:10px;right:10px;"
+          />
+        </template>
+        <el-menu-item v-on:click="exit" >退出登录</el-menu-item>
+      </el-submenu>
+      
     </el-menu>
     <!-- 内容 -->
     <van-row type="flex" justify="space-around">
@@ -58,6 +64,19 @@ export default {
     };
   },
   methods: {
+    // 退出登录
+    exit:function(){
+      // alert("退出登录");
+        this.$store.commit('LOGOUT');
+        this.$message({
+            type: 'success',
+            message: "已退出登录",
+            duration: 2000
+        });
+        setTimeout(()=>{
+          window.location.href=this.$global.localhostUrl + "/login/";
+        }, 1000);
+    },
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
     }
