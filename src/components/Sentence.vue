@@ -73,10 +73,10 @@
                 :filters="[
                     { text: '电影', value: 1 }, 
                     { text: '电视剧', value: 2 },
-                    { text: '小说', value: 3 },
-                    { text: '书籍', value: 4 },
-                    { text: '名人名言', value: 5 },
-                    { text: '原创', value: 6 },
+                    { text: '动漫', value: 3 },
+                    { text: '小说', value: 4 },
+                    { text: '书籍', value: 5 },
+                    { text: '名人名言', value: 6 },
                     ]"
                 :filter-method="filterTag"
                 filter-placement="bottom-end">
@@ -94,21 +94,21 @@
                     <el-tag
                         v-if="scope.row.classfiyId == 3"
                         type="warning"
-                        close-transition>小说
+                        close-transition>动漫
                     </el-tag>
                     <el-tag
                         v-if="scope.row.classfiyId == 4"
                         type="danger"
-                        close-transition>书籍
+                        close-transition>小说
                     </el-tag>
                     <el-tag
                         v-if="scope.row.classfiyId == 5"
                         color="yellow"
-                        close-transition>名人名言
+                        close-transition>书籍
                     </el-tag>
                     <el-tag
                         v-if="scope.row.classfiyId == 6"
-                        close-transition>原创
+                        close-transition>名人名言
                     </el-tag>
                 </template>
             </el-table-column>
@@ -263,18 +263,18 @@ export default {
     },
     methods:{
         // classify格式化
-        classFillter:function(classifyId){
-            if(classifyId == 1){
+        classFillter:function(classfiyId){
+            if(classfiyId == 1){
                 return '电影';
-            }else if(classifyId == 2){
+            }else if(classfiyId == 2){
                 return '电视剧';
-            }else if(classifyId == 3){
+            }else if(classfiyId == 3){
                 return '动漫';
-            }else if(classifyId == 4){
+            }else if(classfiyId == 4){
                 return '小说';
-            }else if(classifyId == 5){
+            }else if(classfiyId == 5){
                 return '书籍';
-            }else if(classifyId == 6){
+            }else if(classfiyId == 6){
                 return '名人名言';
             }else{
                 return '未知错误';
