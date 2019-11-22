@@ -351,6 +351,24 @@ export default {
                 });          
             });
         },
+        // 打开批量删除确认对话框
+        open2(index,row) {
+            this.$confirm('此操作将永久删除选中用户, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+            }).then(() => {
+                // 执行删除多个用户
+                this.loading = true;
+                this.handleDeleteSome();
+
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });          
+            });
+        },
         // 删除单个用户
         handleDelete:function(index,row){
             this.loading = true;
@@ -521,7 +539,7 @@ export default {
                         console.log("操作对象不为空");
                         console.log(this.multipleSelection);
                         // 执行批量删除
-                        this.handleDeleteSome();
+                        this.open2();
                     }
                 }
 
@@ -624,12 +642,14 @@ export default {
             console.log(`每页 ${val} 条`);
             this.pageReqinfo.pageSize = val;
             this.pageReqinfo.pageNum = 1;
+            this.loading = true;
             this.getUserList();
         },
         // 页数发生改变
         handleCurrentChange(val) {
             console.log(`当前页: ${val}`);
             this.pageReqinfo.pageNum = val;
+            this.loading = true;
             this.getUserList();
         },
         // formatter(row, column) {
@@ -645,6 +665,7 @@ export default {
                 'Content-Type':'application/json;charset=UTF-8'
             }
             }).then(response => {
+                this.loading = false;
                 // 响应成功回调
                 console.log(response.data);
                 this.userList = response.data.list;

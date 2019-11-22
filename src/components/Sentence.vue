@@ -103,7 +103,7 @@
                     </el-tag>
                     <el-tag
                         v-if="scope.row.classfiyId == 5"
-                        color="yellow"
+                        color="#F3E5F5"
                         close-transition>书籍
                     </el-tag>
                     <el-tag
@@ -304,6 +304,7 @@ export default {
             cancelButtonText: '取消',
             type: 'warning'
             }).then(() => {
+                this.loading = true;
                 // 执行删除多个句子
                 this.handleDeleteSome();
 
@@ -559,12 +560,14 @@ export default {
             console.log(`每页 ${val} 条`);
             this.pageReqinfo.pageSize = val;
             this.pageReqinfo.pageNum = 1;
+            this.loading = true;
             this.getUserList();
         },
         // 页数发生改变
         handleCurrentChange(val) {
             console.log(`当前页: ${val}`);
             this.pageReqinfo.pageNum = val;
+            this.loading = true;
             this.getUserList();
         },
         // 过滤标签
@@ -580,6 +583,7 @@ export default {
             }
             }).then(response => {
                 // 响应成功回调
+                this.loading = false;
                 console.log(response.data);
                 this.userList = response.data.list;
                 this.setPageInfo(response.data);

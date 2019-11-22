@@ -97,7 +97,7 @@
                     </el-tag>
                     <el-tag
                         v-if="scope.row.classifyId == 5"
-                        color="yellow"
+                        color="#F3E5F5"
                         close-transition>书籍
                     </el-tag>
                     <el-tag
@@ -349,6 +349,7 @@ export default {
             cancelButtonText: '取消',
             type: 'warning'
             }).then(() => {
+                this.loading = true;
                 // 执行删除多个专辑
                 this.handleDeleteSome();
                 // 重新获取数据
@@ -606,12 +607,14 @@ export default {
             console.log(`每页 ${val} 条`);
             this.pageReqinfo.pageSize = val;
             this.pageReqinfo.pageNum = 1;
+            this.loading = true;
             this.getUserList();
         },
         // 页数发生改变
         handleCurrentChange(val) {
             console.log(`当前页: ${val}`);
             this.pageReqinfo.pageNum = val;
+            this.loading = true;
             this.getUserList();
         },
         // 标签过滤
@@ -626,6 +629,7 @@ export default {
                 'Content-Type':'application/json;charset=UTF-8'
             }
             }).then(response => {
+                this.loading = false;
                 // 响应成功回调
                 console.log(response.data);
                 this.userList = response.data.list;
