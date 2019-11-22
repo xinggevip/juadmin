@@ -123,8 +123,8 @@ export default {
 		height: 100%;
 		background: url(../assets/img/bg9.jpg) no-repeat center center;
     background-size: 100% 100%;
-    margin-top:-8px;
-    margin-left: -8px;
+    // margin-top:-8px;
+    // margin-left: -8px;
 	}
 	.form_contianer{
 		position: absolute;
