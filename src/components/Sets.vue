@@ -51,6 +51,11 @@ export default {
                             message: response.data.message,
                             duration: 2000
                         });
+
+                        let objStr = JSON.stringify(admin);
+                        // console.log([objStr]);
+                        this.$store.commit('GET_USER', objStr);
+
                         this.loading = false;
                     }else{
                         this.$message({
