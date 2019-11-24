@@ -3,8 +3,8 @@
         <h1>用户管理</h1>
         <hr>
         <!-- 搜索筛选 -->
-        <el-button type="primary" icon="el-icon-search" size="medium" style="margin-right:15px;float:right">搜索</el-button>
-        <el-input v-model="serch" placeholder="请输入id" size="medium" style="width:200px;margin-right:15px;float:right"></el-input>
+        <el-button type="primary" icon="el-icon-search" size="medium" style="margin-right:15px;float:right" @click="toSearchUsers()">搜索</el-button>
+        <el-input v-model="serch" placeholder="请输入id或姓名" size="medium" style="width:200px;margin-right:15px;float:right"></el-input>
         
         <!-- <el-checkbox v-model="checked">未激活</el-checkbox> -->
         <el-select v-model="batch.do" placeholder="批量操作" style="margin-right:15px;">
@@ -15,6 +15,7 @@
 
         <el-button type="primary"  size="medium" v-on:click="toDo">执行</el-button>
 
+        <h3 v-if="userList.length == 0">无数据</h3>
         <el-table
             ref="multipleTable"
             v-loading="loading"
@@ -334,6 +335,22 @@ export default {
         }
     },
     methods:{
+        // 搜索用户
+        toSearchUsers:function(){
+            this.loading = true;
+            this.pageReqinfo.pageNum = 1;
+            this.$http.post("/api/adminsearchusers?key="+ this.serch +"&pageNum="+ this.pageReqinfo.pageNum +"&pageSize=" + this.pageReqinfo.pageSize,).then(response => {
+                // 响应成功回调
+                this.userList = response.data.list;
+                this.setPageInfo(response.data);
+                this.loading = false;
+            }),
+            function(response) {
+                // 响应错误回调
+                this.loading = false;
+                alert("服务器开小差了");
+            };
+        },
         // 打开删除确认对话框
         open(index,row) {
             this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
