@@ -20,6 +20,7 @@
         <el-menu-item index="/pushhot">推荐管理</el-menu-item>
       </el-submenu>
       <el-menu-item index="/sets">系统设置</el-menu-item>
+      <!-- <img v-if="user != null" class="mdui-icon material-icons mdui-img-circle" v-bind:src="$global.globalPictureUrl + (JSON.parse(this.$store.state.user)).userPicture"/> -->
       <el-submenu index="4" style="float:right;">
         <template slot="title">
           <van-image
@@ -27,7 +28,7 @@
             fit="contain"
             width="40px"
             height="40px;"
-            src="http://www.qiangssvip.com/usr/uploads/2019/05/281426999.jpg"
+            :src="$global.globalPictureUrl + (JSON.parse(this.$store.state.user)).adminPicture"
             style="float:right;top:10px;right:10px;"
           />
         </template>
@@ -60,7 +61,7 @@ export default {
   data() {
     return {
       activeIndex: '1',
-      activeIndex2: '1'
+      activeIndex2: '/'
     };
   },
   methods: {

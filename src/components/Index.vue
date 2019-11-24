@@ -92,7 +92,7 @@ export default {
                 area: true,
                 yAxisName: ['新增用户', '新增句子'],
                 axisSite: {right: ['sensCount']},
-                labelMap: {'usersCount': '用户数量', 'sensCount': '句子数量'}
+                labelMap: {'usersCount': '新增用户', 'sensCount': '新增句子'}
             },
             chartData: {
                 columns: ['date', 'usersCount', 'sensCount'],
