@@ -3,8 +3,8 @@
         <h1>句子管理</h1>
         <hr>
         <!-- 搜索筛选 -->
-        <el-button type="primary" icon="el-icon-search" size="medium" style="margin-right:15px;float:right">搜索</el-button>
-        <el-input v-model="serch" placeholder="请输入id" size="medium" style="width:200px;margin-right:15px;float:right"></el-input>
+        <el-button type="primary" icon="el-icon-search" size="medium" style="margin-right:15px;float:right" @click="toSearchSentence()">搜索</el-button>
+        <el-input v-model="serch" placeholder="请输入句子内容或作者名称" size="medium" style="width:200px;margin-right:15px;float:right"></el-input>
         
         <!-- <el-checkbox v-model="checked">未激活</el-checkbox> -->
         <el-select v-model="batch.do" placeholder="批量操作" style="margin-right:15px;">
@@ -12,7 +12,8 @@
         </el-select>
 
         <el-button type="primary"  size="medium" v-on:click="toDo">执行</el-button>
-
+        
+        <h3 v-if="userList.length == 0">无数据</h3>
         <el-table
             ref="multipleTable"
             v-loading="loading"
@@ -250,7 +251,8 @@ export default {
     },
     created() {
         // 获取所有用户
-        this.getUserList();
+        // this.getUserList();
+        this.getData();
         // 设置对话框宽度
         this.setDialogWidth();
     },
@@ -262,6 +264,28 @@ export default {
         }
     },
     methods:{
+        // 获取用户表
+        getData:function(){
+            this.loading = true;
+            this.$http.post("/api/adminsearchsentence?key="+ this.serch +"&pageNum="+ this.pageReqinfo.pageNum +"&pageSize=" + this.pageReqinfo.pageSize,).then(response => {
+                // 响应成功回调
+                this.userList = response.data.list;
+                this.setPageInfo(response.data);
+                this.loading = false;
+            }),
+            function(response) {
+                // 响应错误回调
+                this.loading = false;
+                alert("服务器开小差了");
+            };
+        },
+        // 搜索用户
+        toSearchSentence:function(){
+            this.pageReqinfo.pageNum = 1;
+            // 获取搜索结果
+            this.getData();
+            
+        },
         // classify格式化
         classFillter:function(classfiyId){
             if(classfiyId == 1){
@@ -366,7 +390,8 @@ export default {
                     });
 
                     // 删除后，重新get数据，实现刷新数据
-                    this.getUserList();
+                    // this.getUserList();
+                    this.getData();
 
                     this.loading = false;
                 }else{
@@ -494,7 +519,8 @@ export default {
                             message: response.data.message,
                             duration: 2000
                         });
-                        this.getUserList();
+                        // this.getUserList();
+                        this.getData();
                         this.loading = false;
                         this.editDialogClose();
 
@@ -561,14 +587,16 @@ export default {
             this.pageReqinfo.pageSize = val;
             this.pageReqinfo.pageNum = 1;
             this.loading = true;
-            this.getUserList();
+            // this.getUserList();
+            this.getData();
         },
         // 页数发生改变
         handleCurrentChange(val) {
             console.log(`当前页: ${val}`);
             this.pageReqinfo.pageNum = val;
             this.loading = true;
-            this.getUserList();
+            // this.getUserList();
+            this.getData();
         },
         // 过滤标签
         filterTag(value, row) {

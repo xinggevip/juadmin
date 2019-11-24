@@ -4,7 +4,7 @@
         <hr>
         <!-- 搜索筛选 -->
         <el-button type="primary" icon="el-icon-search" size="medium" style="margin-right:15px;float:right" @click="toSearchAlbums()">搜索</el-button>
-        <el-input v-model="serch" placeholder="请输入id" size="medium" style="width:200px;margin-right:15px;float:right"></el-input>
+        <el-input v-model="serch" placeholder="请输入专辑名称或详情" size="medium" style="width:200px;margin-right:15px;float:right"></el-input>
         
         <!-- <el-checkbox v-model="checked">未激活</el-checkbox> -->
         <el-select v-model="batch.do" placeholder="批量操作" style="margin-right:15px;">
