@@ -3,7 +3,7 @@
         <h1>专辑管理</h1>
         <hr>
         <!-- 搜索筛选 -->
-        <el-button type="primary" icon="el-icon-search" size="medium" style="margin-right:15px;float:right">搜索</el-button>
+        <el-button type="primary" icon="el-icon-search" size="medium" style="margin-right:15px;float:right" @click="toSearchAlbums()">搜索</el-button>
         <el-input v-model="serch" placeholder="请输入id" size="medium" style="width:200px;margin-right:15px;float:right"></el-input>
         
         <!-- <el-checkbox v-model="checked">未激活</el-checkbox> -->
@@ -13,6 +13,7 @@
 
         <el-button type="primary"  size="medium" v-on:click="toDo">执行</el-button>
 
+        <h3 v-if="userList.length == 0">无数据</h3>
         <el-table
             ref="multipleTable"
             v-loading="loading"
@@ -295,7 +296,8 @@ export default {
     },
     created() {
         // 获取所有用户
-        this.getUserList();
+        // this.getUserList();
+        this.getData();
         // 设置对话框宽度
         this.setDialogWidth();
     },
@@ -307,6 +309,28 @@ export default {
         }
     },
     methods:{
+        // 获取用户表
+        getData:function(){
+            this.loading = true;
+            this.$http.post("/api/adminsearchalbum?key="+ this.serch +"&pageNum="+ this.pageReqinfo.pageNum +"&pageSize=" + this.pageReqinfo.pageSize,).then(response => {
+                // 响应成功回调
+                this.userList = response.data.list;
+                this.setPageInfo(response.data);
+                this.loading = false;
+            }),
+            function(response) {
+                // 响应错误回调
+                this.loading = false;
+                alert("服务器开小差了");
+            };
+        },
+        // 搜索用户
+        toSearchAlbums:function(){
+            this.pageReqinfo.pageNum = 1;
+            // 获取搜索结果
+            this.getData();
+            
+        },
         // classify格式化
         classFillter:function(classifyId){
             if(classifyId == 1){
@@ -353,7 +377,8 @@ export default {
                 // 执行删除多个专辑
                 this.handleDeleteSome();
                 // 重新获取数据
-                this.getUserList();
+                // this.getUserList();
+                this.getData();
 
             }).catch(() => {
                 this.$message({
@@ -412,7 +437,8 @@ export default {
                     });
 
                     // 删除后，重新get数据，实现刷新数据
-                    this.getUserList();
+                    // this.getUserList();
+                    this.getData();
 
                     this.loading = false;
                 }else{
@@ -608,14 +634,16 @@ export default {
             this.pageReqinfo.pageSize = val;
             this.pageReqinfo.pageNum = 1;
             this.loading = true;
-            this.getUserList();
+            // this.getUserList();
+            this.getData();
         },
         // 页数发生改变
         handleCurrentChange(val) {
             console.log(`当前页: ${val}`);
             this.pageReqinfo.pageNum = val;
             this.loading = true;
-            this.getUserList();
+            // this.getUserList();
+            this.getData();
         },
         // 标签过滤
         filterTag(value, row) {
