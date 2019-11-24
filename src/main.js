@@ -6,6 +6,15 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import Global from './components/Global'
 import axios from 'axios'
+// 引用echarts 
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts
+
+// 引用封装好的echarts 
+import VCharts from 'v-charts'
+Vue.use(VCharts)
+
+import './icons' // icon
 
 import Vant from 'vant';
 import 'vant/lib/index.css';
