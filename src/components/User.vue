@@ -323,7 +323,8 @@ export default {
     },
     created() {
         // 获取所有用户
-        this.getUserList();
+        // this.getUserList();
+        this.getData();
         // 设置对话框宽度
         this.setDialogWidth();
     },
@@ -335,10 +336,9 @@ export default {
         }
     },
     methods:{
-        // 搜索用户
-        toSearchUsers:function(){
+        // 获取用户表
+        getData:function(){
             this.loading = true;
-            this.pageReqinfo.pageNum = 1;
             this.$http.post("/api/adminsearchusers?key="+ this.serch +"&pageNum="+ this.pageReqinfo.pageNum +"&pageSize=" + this.pageReqinfo.pageSize,).then(response => {
                 // 响应成功回调
                 this.userList = response.data.list;
@@ -350,6 +350,13 @@ export default {
                 this.loading = false;
                 alert("服务器开小差了");
             };
+        },
+        // 搜索用户
+        toSearchUsers:function(){
+            this.pageReqinfo.pageNum = 1;
+            // 获取搜索结果
+            this.getData();
+            
         },
         // 打开删除确认对话框
         open(index,row) {
@@ -436,7 +443,8 @@ export default {
                     });
 
                     // 删除后，重新get数据，实现刷新数据
-                    this.getUserList();
+                    // this.getUserList();
+                    this.getData();
 
                     this.loading = false;
                 }else{
@@ -660,14 +668,16 @@ export default {
             this.pageReqinfo.pageSize = val;
             this.pageReqinfo.pageNum = 1;
             this.loading = true;
-            this.getUserList();
+            // this.getUserList();
+            this.getData();
         },
         // 页数发生改变
         handleCurrentChange(val) {
             console.log(`当前页: ${val}`);
             this.pageReqinfo.pageNum = val;
             this.loading = true;
-            this.getUserList();
+            // this.getUserList();
+            this.getData();
         },
         // formatter(row, column) {
         //     return row.address;
