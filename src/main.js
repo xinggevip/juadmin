@@ -24,6 +24,7 @@ Vue.use(Vant);
 Vue.config.productionTip = false
 
 Vue.use(ElementUI);
+axios.defaults.baseURL = "http://juapi.qiangssvip.com"
 Vue.prototype.$http = axios
 Vue.prototype.$global = Global
 

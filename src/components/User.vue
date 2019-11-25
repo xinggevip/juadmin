@@ -128,9 +128,10 @@
 
             <h4>上传头像<span style="color:red;text-decoration: none;font-weight:normal"> 建议比例1：1</span></h4>
             <!--  action="http://juapi.qiangssvip.com/api/uploadheadpicture" -->
+            <!-- action="http://localhost:8080/api/uploadheadpicture" -->
             <!-- 文件上传组件 -->
             <el-upload
-                action="http://localhost:8080/api/uploadheadpicture"
+                action="http://juapi.qiangssvip.com/api/uploadheadpicture"
                 ref="upload"
                 name="userPicture"
                 list-type="picture-card"

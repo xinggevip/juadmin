@@ -26,8 +26,8 @@ module.exports = {
     port: 8081,
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',
-        // target: 'http://juapi.qiangssvip.com',
+        // target: 'http://localhost:8080',
+        target: 'http://juapi.qiangssvip.com',
         // target: targetUrl,
         ws: true,
         changeOrigin: true,

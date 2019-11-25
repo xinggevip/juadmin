@@ -147,10 +147,11 @@
         <el-form ref="addFormRef" label-position="right" :rules="rulesEditUser" :model="editUser" label-width="100px" v-if="editUser != null">
 
             <h4>更换专辑封面<span style="color:red;text-decoration: none;font-weight:normal"> 建议比例1：1.5</span></h4>
-            <!--  action="http://juapi.qiangssvip.com/api/uploadheadpicture" -->
+            <!-- action="http://localhost:8080/api/upload" -->
+            <!--  action="http://juapi.qiangssvip.com/api/upload" -->
             <!-- 文件上传组件 -->
             <el-upload
-                action="http://localhost:8080/api/upload"
+                action="http://juapi.qiangssvip.com/api/upload"
                 ref="upload"
                 name="albumPicture"
                 list-type="picture-card"
